@@ -20,6 +20,7 @@ def initial_setup(filename):
     for section in config.sections():
         trap = {} 
 
+        trap['name'] = config[section]
         trap['modified_address'] = generate_address(config[section]['url'], config[section]['version'])
         trap['version'] = config[section]['version']
         trap['api_key'] = config[section]['key']
@@ -29,6 +30,15 @@ def initial_setup(filename):
 
     return traps
 
+def usage():
+    print("""Usage: 
+
+python3 script.py -f <PATH/filename>
+
+Use the flag -f to insert the .ini configuration file.
+    """)
+    exit()
+    
 def generate_address(url, version):
 
     # prendo la versione della trappola
@@ -81,7 +91,7 @@ def save_logs(trap):
 
             events = events + "\n" + show_response.get("events")
 
-        write_logs(events, "logs.json")
+        write_logs(events, f"{trap['name']}-logs.json")
 
         # se la risposta alla search contiene file li scarico e li salvo
         if search_response["x_trapx_com_pcap"] == True:
@@ -92,7 +102,7 @@ def save_logs(trap):
                 "file": "pcap"
             }
             content= make_post_request(download_url, download_payload)
-            save_file(content, f"{trap['modified_address']}_.pcap")
+            save_file(content, f"{trap['name']}_.pcap")
         
         if search_id["x_trapx_com_binary"] == True:
             download_url = f"{trap['modified_address']}/events/download"
@@ -103,7 +113,7 @@ def save_logs(trap):
             }
             content=  make_post_request(download_url, download_payload)
             # se il contenuto è binario vene salvato in uno zip, poi per aprire lo zip la password è MALICIOUS
-            save_file(content, f"{trap['modified_address']}_.zip")
+            save_file(content, f"{trap['name']}_.zip")
 
     else:
         print("[!] No search_id was found in the response")
@@ -114,9 +124,13 @@ def main(traps):
         save_logs(trap)
 
 if __name__ == "__main__":
+    if(len(sys.argv)<2):
+        usage()
+
     args = sys.argv[1:]
+
     if args[0]!='-f':
-        filename = input("[?] Insert the filename or PATH: ")
+        usage()
     else:
         filename=args[1]
 
