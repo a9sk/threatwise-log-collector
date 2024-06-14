@@ -19,13 +19,18 @@ def initial_setup(filename):
 
     for section in config.sections():
         trap = {} 
-
-        trap['name'] = config[section]
+        TEMP = json.loads(config[section]["filter"])
+        trap['name'] = f"{TEMP.get('trap_name')}-{TEMP.get('department')}"
+        #print(f"[debug] name: {trap['name']}")
         trap['modified_address'] = generate_address(config[section]['url'], config[section]['version'])
+        #print(f"[debug] address: {trap['modified_address']}")
         trap['version'] = config[section]['version']
+        #print(f"[debug] version: {trap['version']}")
         trap['api_key'] = config[section]['key']
-        trap['search_payload'] = json.loads(config[section]['payload'])
-
+        #print(f"[debug] api key: {trap['api_key']}")
+        trap['search_payload'] = json.loads(config[section]['filter'].replace("'", '"'))
+        #print(f"[debug] payload: {trap['search_payload']}")
+        print(trap)
         traps.append(trap)
 
     return traps
@@ -43,7 +48,7 @@ def generate_address(url, version):
 
     # prendo la versione della trappola
     parts = url.split('.')
-    mod_address = f"{parts[0]}-apl.{parts[1]}/api/v{version}"
+    mod_address = f"{parts[0]}-apl.threatwise.metallic.io/api/v{version}"
     return mod_address
 
 def make_post_request(url, payload):
@@ -133,9 +138,19 @@ if __name__ == "__main__":
         usage()
     else:
         filename=args[1]
-
-    traps_data = initial_setup(filename)
+    try:
+        traps_data = initial_setup(filename)
+    except KeyboardInterrupt:
+        print("[!] Keyboad Interrupt detected, exiting...")
+        exit
+    
     while True:
-        main(traps_data)
+        try:
+            main(traps_data)
+        except KeyboardInterrupt:
+            print("[!] Keyboad Interrupt detected, exiting...")
+            exit()
+        
         # fa un check ogni 10 minuti
+        print("[...] Waiting...")
         time.sleep(600)
