@@ -120,6 +120,14 @@ def save_logs(trap):
             # se il contenuto è binario vene salvato in uno zip, poi per aprire lo zip la password è MALICIOUS
             save_file(content, f"{trap['name']}_.zip")
 
+            # cancel_payload = {
+            # "api_key":f"{trap['api_key']}",
+            # "search_id": search_id
+            # }
+            # cancel_url = f"{trap['modified_address']}/events/cancel"
+            # cancel_response = make_post_request(cancel_url, cancel_payload)
+            # print(cancel_response)
+            
     else:
         print("[!] No search_id was found in the response")
 
