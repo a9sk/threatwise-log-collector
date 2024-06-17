@@ -73,10 +73,14 @@ def save_file(file, filename):
 
 def save_logs(trap):
 
+    search_payload = {
+        "api_key":f"{trap['api_key']}",
+        "filter": trap['payload']
+    }
     # mi prendo i valori dalla singola trappola
     search_url = f"{trap['modified_address']}/events/search"
 
-    search_response = make_post_request(search_url, trap['search_payload'])
+    search_response = make_post_request(search_url, search_payload)
 
     search_id = search_response.get("search_id")
 
