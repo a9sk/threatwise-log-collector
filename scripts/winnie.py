@@ -65,11 +65,12 @@ def write_logs(logs, filename):
 
 def save_file(file, filename):
     # il file si salva con url_data e ora.estensione
-    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    filename.split('.')
-    filename = f"{filename[0]}{timestamp}.{filename[1]}"
-    with open(filename, 'w') as f:
-        f.write(file)
+    timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+    parts= filename.split('.')
+    filename = f"{parts[0]}_{timestamp}.{parts[1]}"
+    # print(file.text)
+    with open(filename, 'wb') as f:
+        f.write(file.encode('Utf-8'))
 
 def save_logs(trap):
 
