@@ -127,7 +127,14 @@ def save_logs(trap):
             # cancel_url = f"{trap['modified_address']}/events/cancel"
             # cancel_response = make_post_request(cancel_url, cancel_payload)
             # print(cancel_response)
-            
+
+            delete_payload = {
+            "api_key":f"{trap['api_key']}",
+            "search_id": search_id
+            }
+            delete_url = f"{trap['modified_address']}/events/delete"
+            make_post_request(delete_url, delete_payload)
+
     else:
         print("[!] No search_id was found in the response")
 
