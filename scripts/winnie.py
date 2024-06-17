@@ -60,7 +60,7 @@ def write_logs(logs, filename):
     # salvo tutto in un file json, questa parte penso che vada cambiata
     with open(filename, 'a') as file:
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-        file.write(f"--------{timestamp}--------:\n {json.dumps(logs)}\n")
+        file.write(f'"time":"{timestamp}"\n {json.dumps(logs)}\n')
 
 def save_file(file, filename):
     # il file si salva con url_data e ora.estensione
