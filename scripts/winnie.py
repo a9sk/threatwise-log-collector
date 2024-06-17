@@ -109,15 +109,16 @@ def save_logs(trap):
 
         for event in events:
             # se la risposta alla search contiene file li scarico e li salvo
-            if search_response["x_trapx_com_pcap"] == True:
-                download_url = f"{trap['modified_address']}/events/download"
-                download_payload = {
-                    "api_key": trap['api_key'],
-                    "event": search_response['x_Commvault Cloud_com_eventid'],
-                    "file": "pcap"
-                }
-                content= make_post_request(download_url, download_payload)
-                save_file(content, f"{trap['name']}_.pcap")
+            if event.get("x_trapx_com_pcap") == True:
+                print(f"[!] Looks like there is a .pcap file in the event with id: {event.get('x_trapx_com_eventid')}")
+                # download_url = f"{trap['modified_address']}/events/download"
+                # download_payload = {
+                #     "api_key": trap['api_key'],
+                #     "event_id": f"{event.get('x_trapx_com_eventid')}",
+                #     "file": "pcap"
+                # }
+                # content = make_post_request(download_url, download_payload)
+                # save_file(content, f"{trap['name']}_{event.get('x_trapx_com_eventid')}.zip")
             
             if search_id["x_trapx_com_binary"] == True:
                 download_url = f"{trap['modified_address']}/events/download"
