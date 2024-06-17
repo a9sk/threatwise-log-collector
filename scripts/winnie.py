@@ -81,44 +81,54 @@ def save_logs(trap):
     search_id = search_response.get("search_id")
 
     if search_id:
+        events=[]
         pages = search_response.get("number_of_pages")
-
-        for page in pages:
+        if pages:
+            for page in pages:
+                show_payload = {
+                    "api_key": f"{trap['api_key']}",
+                    "search_id": search_id,
+                    "page": page,
+                    "filter": f"{trap['payload']}"
+                }
+                show_url = f"{trap['modified_address']}/events/show"    
+                show_response = make_post_request(show_url, show_payload).json()
+                events.extend(show_response.get("events", []))
+        else:
             show_payload = {
-                "api_key": trap['api_key'],
-                "search_id": search_id,
-                "page": page
+                    "api_key": f"{trap['api_key']}",
+                    "search_id": search_id,
+                    "page": 1,
+                    "filter": f"{trap['payload']}"
             }
-
-            show_url = f"{trap['modified_address']}/events/show"
-            
-            show_response = make_post_request(show_url, show_payload)
-
-            events = events + "\n" + show_response.get("events")
-
+            show_url = f"{trap['modified_address']}/events/show"    
+            show_response = make_post_request(show_url, show_payload).json()
+            events.extend(show_response.get("events", []))
+        
         write_logs(events, f"{trap['name']}-logs.json")
 
-        # se la risposta alla search contiene file li scarico e li salvo
-        if search_response["x_trapx_com_pcap"] == True:
-            download_url = f"{trap['modified_address']}/events/download"
-            download_payload = {
-                "api_key": trap['api_key'],
-                "event": search_response['x_Commvault Cloud_com_eventid'],
-                "file": "pcap"
-            }
-            content= make_post_request(download_url, download_payload)
-            save_file(content, f"{trap['name']}_.pcap")
-        
-        if search_id["x_trapx_com_binary"] == True:
-            download_url = f"{trap['modified_address']}/events/download"
-            download_payload = {
-                "api_key": trap['api_key'],
-                "event": search_response['x_Commvault Cloud_com_eventid'],
-                "file": "binary"
-            }
-            content=  make_post_request(download_url, download_payload)
-            # se il contenuto è binario vene salvato in uno zip, poi per aprire lo zip la password è MALICIOUS
-            save_file(content, f"{trap['name']}_.zip")
+        for event in events:
+            # se la risposta alla search contiene file li scarico e li salvo
+            if search_response["x_trapx_com_pcap"] == True:
+                download_url = f"{trap['modified_address']}/events/download"
+                download_payload = {
+                    "api_key": trap['api_key'],
+                    "event": search_response['x_Commvault Cloud_com_eventid'],
+                    "file": "pcap"
+                }
+                content= make_post_request(download_url, download_payload)
+                save_file(content, f"{trap['name']}_.pcap")
+            
+            if search_id["x_trapx_com_binary"] == True:
+                download_url = f"{trap['modified_address']}/events/download"
+                download_payload = {
+                    "api_key": trap['api_key'],
+                    "event": search_response['x_Commvault Cloud_com_eventid'],
+                    "file": "binary"
+                }
+                content=  make_post_request(download_url, download_payload)
+                # se il contenuto è binario vene salvato in uno zip, poi per aprire lo zip la password è MALICIOUS
+                save_file(content, f"{trap['name']}_.zip")
 
             # cancel_payload = {
             # "api_key":f"{trap['api_key']}",
