@@ -52,12 +52,11 @@ def generate_address(url, version):
     return mod_address
 
 def make_post_request(url, payload):
-    headers = {'Content-Type': 'application/json'}
-    response = requests.post(url, headers=headers, json=payload)
-    return response.json()
+    response = requests.post(url, json=payload)
+    # print(f"{response.text}\n\n\n")
+    return response
 
 def write_logs(logs, filename):
-
     # salvo tutto in un file json, questa parte penso che vada cambiata
     with open(filename, 'a') as file:
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
