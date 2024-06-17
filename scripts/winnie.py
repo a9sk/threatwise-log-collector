@@ -120,16 +120,16 @@ def save_logs(trap):
                 # content = make_post_request(download_url, download_payload)
                 # save_file(content, f"{trap['name']}_{event.get('x_trapx_com_eventid')}.zip")
             
-            if search_id["x_trapx_com_binary"] == True:
-                download_url = f"{trap['modified_address']}/events/download"
-                download_payload = {
-                    "api_key": trap['api_key'],
-                    "event": search_response['x_Commvault Cloud_com_eventid'],
-                    "file": "binary"
-                }
-                content=  make_post_request(download_url, download_payload)
-                # se il contenuto è binario vene salvato in uno zip, poi per aprire lo zip la password è MALICIOUS
-                save_file(content, f"{trap['name']}_.zip")
+            if event.get("x_trapx_com_binary") == True:
+                print(f"[!] Looks like there is a binary file in the event with id: {event.get('x_trapx_com_eventid')}")
+                # download_url = f"{trap['modified_address']}/events/download"
+                # download_payload = {
+                #     "api_key": trap['api_key'],
+                #     "event_id": f"{event.get('x_trapx_com_eventid')}",
+                #     "file": "binary"
+                # }
+                # content=  make_post_request(download_url, download_payload)
+                # save_file(content, f"{trap['name']}_{event.get('x_trapx_com_eventid')}.zip")
 
             # cancel_payload = {
             # "api_key":f"{trap['api_key']}",
