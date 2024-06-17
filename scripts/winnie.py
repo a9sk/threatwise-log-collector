@@ -28,7 +28,7 @@ def initial_setup(filename):
         #print(f"[debug] version: {trap['version']}")
         trap['api_key'] = config[section]['key']
         #print(f"[debug] api key: {trap['api_key']}")
-        trap['search_payload'] = json.loads(config[section]['filter'].replace("'", '"'))
+        trap['payload'] = json.loads(config[section]['filter'].replace("'", '"'))
         #print(f"[debug] payload: {trap['search_payload']}")
         print(trap)
         traps.append(trap)
@@ -79,7 +79,7 @@ def save_logs(trap):
     # mi prendo i valori dalla singola trappola
     search_url = f"{trap['modified_address']}/events/search"
 
-    search_response = make_post_request(search_url, search_payload)
+    search_response = make_post_request(search_url, search_payload).json()
 
     search_id = search_response.get("search_id")
 
@@ -171,7 +171,7 @@ if __name__ == "__main__":
         traps_data = initial_setup(filename)
     except KeyboardInterrupt:
         print("[!] Keyboad Interrupt detected, exiting...")
-        exit
+        exit()
     
     while True:
         try:
