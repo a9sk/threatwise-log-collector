@@ -147,10 +147,9 @@ if __name__ == "__main__":
     while True:
         try:
             main(traps_data)
+            # fa un check ogni 10 minuti
+            print("[...] Waiting...")
+            time.sleep(600)
         except KeyboardInterrupt:
             print("[!] Keyboad Interrupt detected, exiting...")
             exit()
-        
-        # fa un check ogni 10 minuti
-        print("[...] Waiting...")
-        time.sleep(600)
