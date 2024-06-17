@@ -1,6 +1,6 @@
-# Winnie the phoo
+# Winnie
 
-Winnie the phoo (very original name), is a python tool for the collection and analysis of alerts and logs generated from different ThreatWise Metallic Honeypots.
+Winnie (very original name), is a python tool for the collection and analysis of alerts and logs generated from different ThreatWise Metallic Honeypots.
 
 ## Guides
 
@@ -30,7 +30,6 @@ NOTE: change \<filename> with the actual name or path of your configuration file
 - [x] Create a script to parse the addresses
 - [x] Create a python script for the analysis of a single trap
 - [x] Create a python script for the analysis of a whole configuration of traps
-- [ ] Create a setup script to make the winnie.py run by only calling winnie in the terminal (symlink in linux)
 
 ## Licence
 
