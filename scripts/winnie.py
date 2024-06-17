@@ -45,10 +45,9 @@ Use the flag -f to insert the .ini configuration file.
     exit()
     
 def generate_address(url, version):
-
     # prendo la versione della trappola
     parts = url.split('.')
-    mod_address = f"{parts[0]}-apl.threatwise.metallic.io/api/v{version}"
+    mod_address = f"{parts[0]}-apl.threatwise.metallic.io:8443/api/v{version}"
     return mod_address
 
 def make_post_request(url, payload):
