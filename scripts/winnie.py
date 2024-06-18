@@ -50,16 +50,16 @@ def generate_address(url, version):
     mod_address = f"{parts[0]}-apl.threatwise.metallic.io:8443/api/v{version}"
     return mod_address
 
-def make_post_request(url, payload):
-    response = requests.post(url, json=payload)
-    # print(f"{response.text}\n\n\n")
-    return response
-
 def write_logs(logs, filename):
     # salvo tutto in un file json, questa parte penso che vada cambiata
     with open(filename, 'a') as file:
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         file.write(f'"time":"{timestamp}"\n {json.dumps(logs)}\n')
+
+def make_post_request(url, payload):
+    response = requests.post(url, json=payload)
+    # print(f"{response.text}\n\n\n")
+    return response
 
 def save_file(file, filename):
     # il file si salva con url_data e ora.estensione
@@ -68,7 +68,7 @@ def save_file(file, filename):
     filename = f"{parts[0]}_{timestamp}.{parts[1]}"
     # print(file.text)
     with open(filename, 'wb') as f:
-        f.write(file.encode('Utf-8'))
+        f.write(file.text.encode('Utf-8'))
 
 def save_logs(trap):
 
@@ -76,13 +76,15 @@ def save_logs(trap):
         "api_key":f"{trap['api_key']}",
         "filter": trap['payload']
     }
+    # print(search_payload)
+
     # mi prendo i valori dalla singola trappola
     search_url = f"{trap['modified_address']}/events/search"
 
     search_response = make_post_request(search_url, search_payload).json()
 
     search_id = search_response.get("search_id")
-
+    # print(search_id)
     if search_id:
         events=[]
         pages = search_response.get("number_of_pages")
@@ -94,7 +96,7 @@ def save_logs(trap):
                     "page": page,
                     "filter": f"{trap['payload']}"
                 }
-                show_url = f"{trap['modified_address']}/events/show"    
+                show_url = f"{trap['modified_address']}/events/show"
                 show_response = make_post_request(show_url, show_payload).json()
                 events.extend(show_response.get("events", []))
         else:
@@ -104,14 +106,16 @@ def save_logs(trap):
                     "page": 1,
                     "filter": f"{trap['payload']}"
             }
-            show_url = f"{trap['modified_address']}/events/show"    
+            show_url = f"{trap['modified_address']}/events/show"
+            
             show_response = make_post_request(show_url, show_payload).json()
+
             events.extend(show_response.get("events", []))
-        
+    
         write_logs(events, f"{trap['name']}-logs.json")
 
         for event in events:
-            # se la risposta alla search contiene file li scarico e li salvo
+            # Se la risposta alla search contiene file li scarico e li salvo
             if event.get("x_trapx_com_pcap") == True:
                 print(f"[!] Looks like there is a .pcap file in the event with id: {event.get('x_trapx_com_eventid')}")
                 # download_url = f"{trap['modified_address']}/events/download"
@@ -121,8 +125,8 @@ def save_logs(trap):
                 #     "file": "pcap"
                 # }
                 # content = make_post_request(download_url, download_payload)
-                # save_file(content, f"{trap['name']}_{event.get('x_trapx_com_eventid')}.zip")
-            
+                # save_file(content, f"{trap['name']}_{event.get('x_trapx_com_eventid')}.pcap")
+        
             if event.get("x_trapx_com_binary") == True:
                 print(f"[!] Looks like there is a binary file in the event with id: {event.get('x_trapx_com_eventid')}")
                 # download_url = f"{trap['modified_address']}/events/download"
@@ -134,20 +138,22 @@ def save_logs(trap):
                 # content=  make_post_request(download_url, download_payload)
                 # save_file(content, f"{trap['name']}_{event.get('x_trapx_com_eventid')}.zip")
 
-            # cancel_payload = {
-            # "api_key":f"{trap['api_key']}",
-            # "search_id": search_id
-            # }
-            # cancel_url = f"{trap['modified_address']}/events/cancel"
-            # cancel_response = make_post_request(cancel_url, cancel_payload)
-            # print(cancel_response)
+        # cancel_payload = {
+        # "api_key":f"{trap['api_key']}",
+        # "search_id": search_id
+        # }
+        # cancel_url = f"{trap['modified_address']}/events/cancel"
+        # cancel_response = make_post_request(cancel_url, cancel_payload)
+        # print(cancel_response)
+        
+        # deletando tutti i log si è sicuri che vengan loggati solo gli eventi nuovi
 
-            delete_payload = {
-            "api_key":f"{trap['api_key']}",
-            "search_id": search_id
-            }
-            delete_url = f"{trap['modified_address']}/events/delete"
-            make_post_request(delete_url, delete_payload)
+        delete_payload = {
+        "api_key":f"{trap['api_key']}",
+        "search_id": search_id
+        }
+        delete_url = f"{trap['modified_address']}/events/delete"
+        make_post_request(delete_url, delete_payload)
 
     else:
         print("[!] No search_id was found in the response")
@@ -169,16 +175,19 @@ if __name__ == "__main__":
         filename=args[1]
     try:
         traps_data = initial_setup(filename)
+        # print(traps_data)
     except KeyboardInterrupt:
         print("[!] Keyboad Interrupt detected, exiting...")
-        exit()
+        exit
     
     while True:
         try:
             main(traps_data)
             # fa un check ogni 10 minuti
             print("[...] Waiting...")
-            time.sleep(600)
+            time.sleep(60)
         except KeyboardInterrupt:
             print("[!] Keyboad Interrupt detected, exiting...")
             exit()
+        
+        
