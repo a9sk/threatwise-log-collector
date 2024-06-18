@@ -234,7 +234,6 @@ def save_logs(trap):
         print("[!] No search_id was found in the response")
 
 def main(traps):
-    # salvo i log per ogni nodo della lista
     for trap in traps:
         save_logs(trap)
 
@@ -263,7 +262,7 @@ if __name__ == "__main__":
             main(traps_data)
             # -------------------
             # Does a check every x time (defaut 600 seconds)
-            
+
             print("[...] Waiting...")
             time.sleep(600)
         except KeyboardInterrupt:
