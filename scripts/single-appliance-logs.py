@@ -2,8 +2,6 @@ import requests
 import time
 import json
 
-# variabili globali
-
 modified_address = ""
 search_payload = {}
 api_key = ""
@@ -13,7 +11,6 @@ def initial_setup():
 
     url = input("[?] Insert the url: ")
 
-    # controlla che sia un url "valido"
     if not url.startswith("http://") and not url.startswith("https://"):
         print("[!] Invalid URL format, Use an URL starting with 'http://' or 'https://'")
         exit
@@ -34,7 +31,6 @@ def initial_setup():
         print("[!] API key is required")
         exit
 
-    # qui puoi entrare tanti filtri quanti vuoi   
     num_fields = int(input("[?] Enter the number of fields: "))
 
     filter_payload = {}
@@ -50,19 +46,19 @@ def initial_setup():
     }
 
 def generate_address(url):
-    # modifica l'url come da guida
+
     parts = url.split('.')
     mod_address = f"{parts[0]}-apl.{parts[1]}/api/v{version}"
     return mod_address
 
 def make_post_request(url, payload):
-    # sono abituato a fare le richieste così nelle ctf, magari va cambiato
+
     headers = {'Content-Type': 'application/json'}
     response = requests.post(url, headers=headers, json=payload)
     return response.json()
 
 def write_logs(logs, filename):
-    # salvo tutto in un file json, questa parte penso che vada cambiata
+
     with open(filename, 'a') as file:
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         for log in logs:
@@ -70,14 +66,12 @@ def write_logs(logs, filename):
 
 def main():
 
-    # richiesta POST come da guida
     search_url = f"{modified_address}/events/search"
 
     search_response = make_post_request(search_url, search_payload)
 
     search_id = search_response.get("search_id")
 
-    # se la risposta ha una sezione search_id probabilmente è andato tutto bene
     if search_id:
 
         show_payload = {
@@ -103,5 +97,4 @@ if __name__ == "__main__":
 
     while True:
         main()
-        # fa un check ogni 10 minuti
         time.sleep(600)
