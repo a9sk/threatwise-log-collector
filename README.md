@@ -1,6 +1,6 @@
-# Winnie
+# ThreatWise Metallic Logs Collector
 
-Winnie (very original name), is a python tool for the collection and analysis of alerts and logs generated from different ThreatWise Metallic Honeypots.
+Python tool for the collection and analysis of alerts and logs generated from different ThreatWise Metallic Honeypots.
 
 ## Guides
 
@@ -21,7 +21,7 @@ For an easier cheatsheet on the API calls read the file [cheatsheet_API.md](chea
 
 To run the script use the following command from the main directory:
 ```python
-python3 <PATH>/winnie.py -f <filename>.ini 
+python3 <PATH>/logs.py -f <filename>.ini 
 ```
 NOTE: change \<filename> with the actual name or path of your configuration file and \<PATH> with the path to the script from where you are in the terminal.
 

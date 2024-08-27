@@ -1,7 +1,5 @@
 # TSOC API
 
-What is funny is we are working with honeypots and api in italian means bees...
-
 ## Intro
 
 The TSOC has a REST API that enables developing client scripts for integrating Threatwise with whatever thing you might want to integrate it into.

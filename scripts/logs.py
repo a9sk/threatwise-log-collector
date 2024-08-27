@@ -51,7 +51,7 @@ def initial_setup(filename):
 def usage():
     print("""Usage: 
 
-python3 script.py -f <PATH/filename>
+python3 logs.py -f <PATH/filename>
 
 Use the flag -f to insert the .ini configuration file.
     """)
